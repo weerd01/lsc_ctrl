@@ -1,0 +1,40 @@
+#!/usr/bin/env python3
+
+import time
+import sys
+import requests
+
+spot_1 = "192.168.0.50"
+
+spot_on = "/cm?cmnd=Power%20On"
+spot_off = "/cm?cmnd=Power%20Off"
+
+dimmer = "/cm?cmnd=Dimmer%20"
+color = "/cm?cmnd=Color%20"
+
+def lights_on():
+	print("on")
+	r  = requests.get('http://' + spot_1 + spot_on)
+	return
+
+def lights_off():
+	print("off")
+	r  = requests.get('http://' + spot_1 + spot_off)
+	return
+
+def lights_rise():
+	print("dimmer up")
+	for dim_value in range(0,110,5):
+		r = requests.get('http://' +  spot_1 + dimmer + str(dim_value))
+
+def color_cycle():
+	print("color cycle")
+	for color_value in range(0,15):
+		r = requests.get('http://' +  spot_1 + color + str(color_value))
+		time.sleep(1)
+
+color_cycle()
+
+lights_rise()
+
+lights_off()
