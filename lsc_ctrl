@@ -6,7 +6,19 @@ import requests
 import argparse
 
 def main():
-   sys.exit() 
+    if args.state == 'on':
+        if args.rise == 'fast':
+            lights_rise("fast")
+        elif args.rise == 'slow':
+            lights_rise("slow")
+        else:
+            lights_on()
+    else:
+        lights_off()
+
+    print(args)
+
+    sys.exit() 
 
 spot_1 = "192.168.0.50"
 
@@ -17,34 +29,40 @@ dimmer = "/cm?cmnd=Dimmer%20"
 color = "/cm?cmnd=Color%20"
 
 def lights_on():
-	print("on")
-	r  = requests.get('http://' + spot_1 + spot_on)
-	return
+    print("on")
+    r  = requests.get('http://' + spot_1 + spot_on)
+    return
 
 def lights_off():
-	print("off")
-	r  = requests.get('http://' + spot_1 + spot_off)
-	return
+    print("off")
+    r  = requests.get('http://' + spot_1 + spot_off)
+    return
 
-def lights_rise():
-	print("dimmer up")
-	for dim_value in range(0,110,5):
-		r = requests.get('http://' +  spot_1 + dimmer + str(dim_value))
+def lights_rise(speed):
+    if speed == 'slow':
+        n = 1
+    else:
+        n = 5
+
+    print("dimmer up", n)
+    for dim_value in range(0,110, n):
+        r = requests.get('http://' +  spot_1 + dimmer + str(dim_value))
 
 def color_cycle():
-	print("color cycle")
-	for color_value in range(0,15):
-		r = requests.get('http://' +  spot_1 + color + str(color_value))
+    print("color cycle")
+    for color_value in range(0,15):
+        r = requests.get('http://' +  spot_1 + color + str(color_value))
 
 def process_args():
     parser=argparse.ArgumentParser(description='lsc_ctrl - controlling LSC bulbs')
 
     parser.add_argument('state', type = str, help="'on' and 'off' are supported.")
+    parser.add_argument('--rgb', type = str, help="Add start RGB value")
+    parser.add_argument('--dim', type = str, help="Add dim value")
+    parser.add_argument('--rise', type = str, help="Slowly turn on lights")
 
-
+    global args
     args=parser.parse_args()
-
-
 
 process_args()
 main()
