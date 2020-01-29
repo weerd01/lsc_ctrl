@@ -3,6 +3,10 @@
 import time
 import sys
 import requests
+import argparse
+
+def main():
+   sys.exit() 
 
 spot_1 = "192.168.0.50"
 
@@ -31,10 +35,17 @@ def color_cycle():
 	print("color cycle")
 	for color_value in range(0,15):
 		r = requests.get('http://' +  spot_1 + color + str(color_value))
-		time.sleep(1)
 
-color_cycle()
+def process_args():
+    parser=argparse.ArgumentParser(description='lsc_ctrl - controlling LSC bulbs')
 
-lights_rise()
+    parser.add_argument('state', type = str, help="'on' and 'off' are supported.")
 
-lights_off()
+
+    args=parser.parse_args()
+
+
+
+process_args()
+main()
+
