@@ -1,3 +1,8 @@
+10022020-1:
+	- Added support for multiple bulbs/spots (put IP numbers in a list)
+	- Added optional dim value (0-100) for -every- subcommand
+	- Added --setcolor option (0-15) << USES RGB LED's 
+	- Added --ct (color temperature option) << USES the WHITE LED's 
 
 29012020-2:
 	- Added commandline arguments
