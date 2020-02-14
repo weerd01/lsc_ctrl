@@ -1,3 +1,7 @@
+14022020-1:
+	- Many fuckups and fixes added
+	- devices.yaml added to define your groups and devices. 
+	
 10022020-1:
 	- Added support for multiple bulbs/spots (put IP numbers in a list)
 	- Added optional dim value (0-100) for -every- subcommand

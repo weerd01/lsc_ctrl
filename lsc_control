@@ -4,9 +4,21 @@ import time
 import sys
 import requests
 import argparse
+import configuration as cfg 
+
+#groups = cfg.get_groups()
+
+#group = 'aanrecht'
+ 
+#group_ip = cfg.get_group_ipaddr('aanrecht')
+#print(group_ip)
+
+#ip = cfg.get_group_ipaddr()
+
+#print(groups)
 
 def main():
-
+  
     if args.dim == None:
         args.dim = 100
 
@@ -33,8 +45,7 @@ def main():
 
     sys.exit() 
 
-#spot_1 = "192.168.0.50"
-spot_list = ['192.168.0.51', '192.168.0.52', '192.168.0.53', '192.168.0.50']
+#spot_list =  cfg.get_group_ipaddr(args.group)
 
 spot_on = "/cm?cmnd=Power%20On"
 spot_off = "/cm?cmnd=Power%20Off"
@@ -80,19 +91,60 @@ def setct(ct_value, dim_value):
             r = requests.get('http://' +  _ + color_temp + str(ct_value))
             r = requests.get('http://' +  _ + dimmer + str(dim_value))
 
+def getgroups():
+
+    print('Available device groups: ')
+
+    groups = cfg.get_groups()
+
+    for c, _ in enumerate(groups):
+      print(str(c+1) + ": ", _)
+    
+    sys.exit()
 
 def process_args():
+
+    global args
+    global spot_list
+
     parser=argparse.ArgumentParser(description='lsc_ctrl - controlling LSC bulbs')
 
-    parser.add_argument('state', type = str, help="'on' and 'off' are supported.")
+    parser.add_argument('--group', type = str, help="Specify which group you want control!")
+    parser.add_argument('--state', type = str, help="'on' and 'off' are supported.")
     parser.add_argument('--rgb', type = str, help="Add start RGB value")
     parser.add_argument('--dim', type = str, help="Add dim value")
     parser.add_argument('--rise', type = str, help="Slowly turn on lights")
     parser.add_argument('--setcol', type = str, help="Set color 0-15")
     parser.add_argument('--ct', type = str, help="Set color temperature 153-500")
+    parser.add_argument('--getgroups', help="Show available groups", action="store_true")
 
-    global args
+    if len(sys.argv) == 1:
+      parser.print_help(sys.stderr)
+      sys.exit(1)
+
     args=parser.parse_args()
+
+    spot_list = cfg.get_group_ipaddr(args.group)
+
+    if args.getgroups:
+      getgroups()
+
+    if not args.group:
+      print ('You must specify a group using: --group')
+      sys.exit()
+    
+    if not spot_list:
+      print('No spots found in group: ' + args.group + '. Dit you specify to correct group?')
+      print()
+      print('Pro tips:')
+      print()
+      print(' - use --getgroups to view available groups')
+      print(' - edit devices.yaml to define your devices and groups!')
+    
+      sys.exit(1)
+    else:
+      print(spot_list)
+      sys.exit()
 
 process_args()
 main()

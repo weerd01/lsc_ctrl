@@ -1,0 +1,34 @@
+---
+
+- lamp_1:
+    ip: 192.168.0.51
+    group: aanrecht
+    order: 1
+
+- lamp_2:
+    ip: 192.168.0.52
+    group: aanrecht
+    order: 2
+
+- lamp_3:
+    ip: 192.168.0.53
+    group: aanrecht
+    order: 3
+
+
+
+- lamp_1_achterkamer:
+    ip: 192.168.0.55
+    group: achterkamer
+    order: 1
+
+
+- lamp_2_achterkamer:
+    ip: 192.168.0.56
+    group: achterkamer
+    order: 2
+
+- lamp_3_achterkamer:
+    ip: 192.168.0.57
+    group: achterkamer
+    order: 3
