@@ -1,27 +1,17 @@
 #!/usr/bin/env python3
 
+# Tasmota Lightning Control (tlc)
+# (c) 2020 Ddw (GPL when released)
+
 import time
 import sys
 import requests
 import argparse
 import configuration as cfg 
-
-#groups = cfg.get_groups()
-
-#group = 'aanrecht'
- 
-#group_ip = cfg.get_group_ipaddr('aanrecht')
-#print(group_ip)
-
-#ip = cfg.get_group_ipaddr()
-
-#print(groups)
+import webcall as web
 
 def main():
   
-    if args.dim == None:
-        args.dim = 100
-
     if args.state == 'on':
 
         if args.rise == 'fast':
@@ -30,8 +20,8 @@ def main():
         elif args.rise == 'slow':
             lights_rise("slow", args.dim)
 
-        elif args.setcol:
-            setcol(args.setcol, args.dim)
+        elif args.col:
+            setcol(args.col, args.dim)
 
         elif args.ct:
             setct(args.ct, args.dim)
@@ -41,31 +31,21 @@ def main():
     else:
         lights_off()
 
-    print(args)
 
     sys.exit() 
 
-#spot_list =  cfg.get_group_ipaddr(args.group)
-
-spot_on = "/cm?cmnd=Power%20On"
-spot_off = "/cm?cmnd=Power%20Off"
-
-dimmer = "/cm?cmnd=Dimmer%20"
-color = "/cm?cmnd=Color%20"
-color_temp = "/cm?cmnd=CT%20"
 
 def lights_on(dim_value):
     for _ in spot_list:
-        print("on", _)
-        r  = requests.get('http://' + _ + spot_on)
-        r  = requests.get('http://' +  _ + dimmer + str(dim_value))
+        print("Turn on", _)
+        r = requests.get(web.call("method") + _ + web.call("spot_on"))
+        r = requests.get(web.call("method") +  _ + web.call("dimmer") + str(dim_value))
     return        
 
 def lights_off():
     for _ in spot_list:
         print("off", _)
-        r  = requests.get('http://' + _ + spot_off)
-        r  = requests.get('http://' +  _ + dimmer + str(0))
+        r  = requests.get(web.call("method") + _ + web.call("spot_off"))
     return
 
 def lights_rise(speed, dim_max):
@@ -77,19 +57,34 @@ def lights_rise(speed, dim_max):
     print("dimmer up", n)
     for _ in spot_list:
         for dim_value in range(0, dim_max+10, n):
-            r = requests.get('http://' +  _ + dimmer + str(dim_value))
+            r = requests.get('http://' +  _ + web.call("dimmer") + str(dim_value))
 
 def setcol(color_value, dim_value):
     print("set color")
     for _ in spot_list:
-            r = requests.get('http://' +  _ + color + str(color_value))
-            r = requests.get('http://' +  _ + dimmer + str(dim_value))
+            r = requests.get(web.call("method") +  _ + web.call("color") + str(color_value))
+            r = requests.get(web.call("method") +  _ + web.call("dimmer") + str(dim_value))
 
 def setct(ct_value, dim_value):
     print("Set color temperature")
     for _ in spot_list:
-            r = requests.get('http://' +  _ + color_temp + str(ct_value))
-            r = requests.get('http://' +  _ + dimmer + str(dim_value))
+            r = requests.get(web.call("method") +  _ + web.call("color_temp") + str(ct_value))
+            r = requests.get(web.call("method") +  _ + web.call("dimmer") + str(dim_value))
+
+def set_fade(fade_value):
+    if fade_value == 'on':
+      for _ in spot_list:
+            r = requests.get(web.call("method") +  _ + web.call("fade_on"))
+            print(r)
+    elif fade_value == 'off':
+      for _ in spot_list:
+            r = requests.get(web.call("method") +  _ + web.call("fade_off"))
+            print(r)
+    else:
+            print('No on or off specified.')
+
+    sys.exit()
+
 
 def getgroups():
 
@@ -104,6 +99,8 @@ def getgroups():
 
 def process_args():
 
+    # Parse arguments and set sane defaults if any parameters are missing.
+
     global args
     global spot_list
 
@@ -114,8 +111,9 @@ def process_args():
     parser.add_argument('--rgb', type = str, help="Add start RGB value")
     parser.add_argument('--dim', type = str, help="Add dim value")
     parser.add_argument('--rise', type = str, help="Slowly turn on lights")
-    parser.add_argument('--setcol', type = str, help="Set color 0-15")
-    parser.add_argument('--ct', type = str, help="Set color temperature 153-500")
+    parser.add_argument('--col', type = str, help="Set color 0-15")
+    parser.add_argument('--ct', type = str, help="Set color temperature 153-500.")
+    parser.add_argument('--fade', type = str, help="Turn fading 'on' or 'off'.")
     parser.add_argument('--getgroups', help="Show available groups", action="store_true")
 
     if len(sys.argv) == 1:
@@ -129,10 +127,13 @@ def process_args():
     if args.getgroups:
       getgroups()
 
+    if args.fade:
+      set_fade(args.fade)
+
     if not args.group:
       print ('You must specify a group using: --group')
       sys.exit()
-    
+
     if not spot_list:
       print('No spots found in group: ' + args.group + '. Dit you specify to correct group?')
       print()
@@ -142,9 +143,7 @@ def process_args():
       print(' - edit devices.yaml to define your devices and groups!')
     
       sys.exit(1)
-    else:
-      print(spot_list)
-      sys.exit()
+
 
 process_args()
 main()

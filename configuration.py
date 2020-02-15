@@ -6,8 +6,12 @@ import yaml
 groups = []
 groups_unique = []
 
-with open(r'devices.yaml') as file: 
-  devices = yaml.load(file, Loader=yaml.FullLoader)
+try:
+  with open(r'/opt/scripts/lsc_ctrl/devices.yaml') as file: 
+    devices = yaml.load(file, Loader=yaml.FullLoader)
+except:
+  print("Problems accessing the configuration file. Please create a valid devices.yaml file.")
+  sys.exit(1)
 
 def get_groups():
   
