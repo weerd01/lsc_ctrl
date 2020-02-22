@@ -1,3 +1,9 @@
+22022020-1:
+  - The 'rise' functionality works again (i know there is a flicker bug) 
+  - Added some commentary in the code
+  - initial 'christmas' routine added! This sets your bulbs at random colors :)
+  - Project rename to: tlc (Tasmota Lightning Control). It just fits better.
+
 14022020-1:
 	- Many fuckups and fixes added
 	- devices.yaml added to define your groups and devices. 

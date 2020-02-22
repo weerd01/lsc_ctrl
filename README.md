@@ -1,4 +1,4 @@
-# lsc_ctrl
+# tlc (Tasmota Lightning Control) 
 
 Intro:
 
@@ -11,7 +11,7 @@ pip3 install paho-mqtt
 
 Status: 
 
-very experimental. I am currently converting simple WEB requests you can send to tasmota to python 3 code/functions. It's not usable code at this moment! Once the script does something useful, i will update the status. Since i am testing/refactoring a lot, i suggest you don't waste time on this script .. yet (!) :)
+Fairly usable! Although some things are missing, it's actually running in 'production' here :) Once you have setup your configuration file, this program can turn your lights on, off as well as setting colors, dim values and a few other tricks.  
 
 Planned: 
 
