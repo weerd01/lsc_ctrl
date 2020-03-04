@@ -23,6 +23,21 @@ def call(call):
   elif call == "fade_off":
     value = "/cm?cmnd=Fade%200"
 
+  elif call == "powerstate_on":
+    value = "/cm?cmnd=PowerOnState%201"
+
+  elif call == "powerstate_off":
+    value = "/cm?cmnd=PowerOnState%200"
+
+  elif call == "powerstate_laststate":
+    value = "/cm?cmnd=PowerOnState%203"
+
+  elif call == "powercycle_detection_on":
+    value = "/cm?cmnd=SetOption65%200"
+
+  elif call == "powercycle_detection_off":
+    value = "/cm?cmnd=SetOption65%201"
+
   elif call == "method":
     value = "http://"
  

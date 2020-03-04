@@ -1,3 +1,7 @@
+04032020-1:
+  - Added '--powercycle_detection' option. 
+  - Added '--poweronstate' option.
+
 22022020-1:
   - The 'rise' functionality works again (i know there is a flicker bug) 
   - Added some commentary in the code
